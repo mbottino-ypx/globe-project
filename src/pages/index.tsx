@@ -8,9 +8,20 @@ const GlobeMapSwitcher = dynamic(() => import("./components/globe"), {
 
 const App = () => {
   const [location, setLocation] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(e.target.value);
+  };
+
+  const handleSearch = () => {
+    setSearchLocation(location);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   return (
@@ -34,6 +45,7 @@ const App = () => {
           placeholder="Buscar una localidad"
           value={location}
           onChange={handleLocationChange}
+          onKeyPress={handleKeyPress}
           style={{
             padding: "5px",
             border: "1px solid #ccc",
@@ -41,10 +53,22 @@ const App = () => {
             outline: "none",
           }}
         />
+        <button
+          onClick={handleSearch}
+          style={{
+            padding: "5px 10px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            backgroundColor: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          Buscar
+        </button>
       </div>
 
       {/* Componente combinado */}
-      <GlobeMapSwitcher locationName={location} />
+      <GlobeMapSwitcher locationName={searchLocation} />
     </div>
   );
 };

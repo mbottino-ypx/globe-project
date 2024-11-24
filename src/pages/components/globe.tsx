@@ -17,10 +17,25 @@ const GlobeMapSwitcher: React.FC<GlobeMapSwitcherProps> = ({ locationName }) => 
   const [showMap, setShowMap] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  const svgIcon = L.divIcon({
+    html: `<svg class="absolute z-[1]" width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" > <g clip-path="url(#clip0_744_579)"> <path d="M0.5 12.2364V0.5H10.1665V15.6349L0.5 12.2364Z" fill="#383838" stroke="#383838" /> <path d="M31.5 11.936L21.8335 15.3345V0.5H31.5V11.936Z" fill="#383838" stroke="#383838" /> <path d="M20.8335 31.5008H11.1665V20.0571L20.8335 16.7411V31.5008Z" fill="#383838" stroke="#383838" /> </g> </svg>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    className: 'custom-icon'
+  });
+
+  const style = document.createElement('style');
+  style.innerHTML = `
+    .custom-icon .custom-svg {
+      background: transparent;
+      border: none;
+    }
+  `
+
   // Buscar las coordenadas de la localidad
   useEffect(() => {
     if (locationName) {
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${locationName}`)
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.length > 0) {
@@ -48,16 +63,20 @@ const GlobeMapSwitcher: React.FC<GlobeMapSwitcherProps> = ({ locationName }) => 
   useEffect(() => {
     if (showMap && mapCenter && mapRef.current) {
       if (mapInstance) {
-        mapInstance.setView(mapCenter, 8); // Actualizar vista del mapa existente
+        mapInstance.setView(mapCenter, 18); // Ajustar nivel de zoom para ver calles aledañas más de cerca
+
+        L.marker(mapCenter, {icon: svgIcon}).addTo(mapInstance);
       } else {
         // Crear nuevo mapa
-        const map = L.map(mapRef.current).setView(mapCenter, 8);
+        const map = L.map(mapRef.current).setView(mapCenter, 18); // Ajustar nivel de zoom para ver calles aledañas más de cerca
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "&copy; OpenStreetMap contributors",
         }).addTo(map);
 
         setMapInstance(map);
+
+        L.marker(mapCenter, {icon: svgIcon}).addTo(map);
       }
     }
   }, [showMap, mapCenter]);
