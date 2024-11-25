@@ -9,7 +9,7 @@ interface GlobeMapSwitcherProps {
   locationName: string;
 }
 
-const GlobeMapSwitcher: React.FC<GlobeMapSwitcherProps> = ({ locationName }) => {
+const GlobeMapSwitcherAddress: React.FC<GlobeMapSwitcherProps> = ({ locationName }) => {
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
@@ -151,4 +151,4 @@ const GlobeMapSwitcher: React.FC<GlobeMapSwitcherProps> = ({ locationName }) => 
   );
 };
 
-export default GlobeMapSwitcher;
+export default GlobeMapSwitcherAddress;

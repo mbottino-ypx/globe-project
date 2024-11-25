@@ -2,11 +2,11 @@
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
 
-const GlobeMapSwitcher = dynamic(() => import("./components/globe"), {
+const GlobeMapSwitcherAddress = dynamic(() => import("../components/globe-address"), {
   ssr: false, // Deshabilita la renderización en el servidor
 });
 
-const App = () => {
+const AddressPage = () => {
   const [location, setLocation] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
 
@@ -25,7 +25,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div className="">
       <div
         style={{
           position: "absolute",
@@ -42,7 +42,7 @@ const App = () => {
       >
         <input
           type="text"
-          placeholder="Buscar una localidad"
+          placeholder="Search an Address"
           value={location}
           onChange={handleLocationChange}
           onKeyPress={handleKeyPress}
@@ -68,9 +68,9 @@ const App = () => {
       </div>
 
       {/* Componente combinado */}
-      <GlobeMapSwitcher locationName={searchLocation} />
+      <GlobeMapSwitcherAddress locationName={searchLocation} />
     </div>
   );
 };
 
-export default App;
+export default AddressPage;
