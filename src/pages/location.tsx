@@ -1,70 +1,60 @@
 // pages/location.tsx
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
+import { locations } from "../utils/mock/location";
 
 const GlobeMapSwitcher = dynamic(() => import("../components/globe-locations"), {
   ssr: false, // Deshabilita la renderización en el servidor
 });
 
 const LocationPage: React.FC = () => {
-  const [location, setLocation] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
 
-  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(e.target.value);
-  };
-
-  const handleSearch = () => {
+  const handleSearch = (location: string) => {
     setSearchLocation(location);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
-
   return (
-    <div className="">
+    <div className="relative h-screen">
       <div
         style={{
           position: "absolute",
           top: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
+          // left: "50%",
+          // transform: "translateX(-50%)",
           zIndex: 1000,
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
+          backgroundColor: "rgb(186 186 186 / 90%)",
           padding: "10px",
           borderRadius: "5px",
           display: "flex",
+          flexDirection: "column",
           gap: "10px",
+          marginLeft: '1%'
+
+//           position: absolute;
+//     top: 10px;
+//     /* left: 50%; */
+//     /* transform: translateX(-50%); */
+//     z-index: 1000;
+//     background-color: rgb(88 87 87 / 90%);
+//     padding: 10px;
+//     border-radius: 5px;
+//     display: flex
+// ;
+//     flex-direction: column;
+//     gap: 10px;
+//     margin-left: 1%;
         }}
       >
-        <input
-          type="text"
-          placeholder="Search a country or location"
-          value={location}
-          onChange={handleLocationChange}
-          onKeyPress={handleKeyPress}
-          style={{
-            padding: "5px",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
-            outline: "none",
-          }}
-        />
-        <button
-          onClick={handleSearch}
-          style={{
-            padding: "5px 10px",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
-            backgroundColor: "#fff",
-            cursor: "pointer",
-          }}
-        >
-          Buscar
-        </button>
+        {locations.map((location) => (
+          <button
+            key={location.id}
+            className="block w-full text-left p-2 bg-white rounded mb-2 hover:bg-gray-200"
+            onClick={() => handleSearch(location.name)}
+          >
+            {location.name}
+          </button>
+        ))}
       </div>
 
       {/* Componente combinado */}
