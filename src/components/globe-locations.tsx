@@ -1,4 +1,3 @@
-// components/GlobeMapSwitcher.tsx
 import React, { useEffect, useRef, useState } from "react";
 import Globe, { GlobeMethods } from "react-globe.gl";
 import "tailwindcss/tailwind.css";
@@ -11,8 +10,8 @@ const GlobeMapSwitcher: React.FC<GlobeMapSwitcherProps> = ({ locationName }) => 
   const globeRef = useRef<GlobeMethods | undefined>(undefined);
   const [showMarker, setShowMarker] = useState(false);
 
-  // Función para buscar las coordenadas del país o ciudad
   useEffect(() => {
+    // Función para buscar las coordenadas del país o ciudad
     const fetchLocation = async (query: string) => {
       try {
         const countryResponse = await fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(query)}`);
@@ -20,9 +19,11 @@ const GlobeMapSwitcher: React.FC<GlobeMapSwitcherProps> = ({ locationName }) => 
         const [countryData] = await countryResponse.json();
         const { latlng } = countryData;
 
-        // Girar el globo para centrar la ubicación
+        // Girar el globo para centrar la ubicación y detener la rotación automática
         if (globeRef.current) {
-          globeRef.current.pointOfView({ lat: latlng[0], lng: latlng[1], altitude: 0.8 }, 2000);
+          const { current } = globeRef;
+          current.controls().autoRotate = false;
+          current.pointOfView({ lat: latlng[0], lng: latlng[1], altitude: 0.8 }, 2000);
           setShowMarker(true);  // Mostrar el marcador después de centrar la ubicación
         }
       } catch (err) {
@@ -33,6 +34,16 @@ const GlobeMapSwitcher: React.FC<GlobeMapSwitcherProps> = ({ locationName }) => 
 
     if (locationName) {
       fetchLocation(locationName);
+    } else {
+      // Reanudar la rotación automática si no hay una ubicación específica
+      const animate = () => {
+        if (globeRef.current) {
+          const { current } = globeRef;
+          current.controls().autoRotate = true;
+          current.controls().autoRotateSpeed = 1.0;  // Ajustar la velocidad de rotación
+        }
+      };
+      animate();
     }
   }, [locationName]);
 
@@ -44,7 +55,7 @@ const GlobeMapSwitcher: React.FC<GlobeMapSwitcherProps> = ({ locationName }) => 
         bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
         backgroundColor="rgba(0,0,0,0)"
         showAtmosphere={false}
-        enablePointerInteraction={false}
+        enablePointerInteraction={true}  // Permitir la interacción con el globo
       />
 
       {showMarker && (
